@@ -366,7 +366,7 @@ void PrimaryUI::RenderMultiplayerPage(Window& window, MultiplayerBehaviour* mult
 		{
 			m_Assets->DrawLeftAlignedText(
 				gfx,
-				"What is the address you would like\nto join?\n" + window.GetInputText() + m_Assets->m_CursorPosAnimText + "\n\nPress [ENTER] to continue",
+				"What is the IP address you would like\nto join?\n" + window.GetInputText() + m_Assets->m_CursorPosAnimText + "\n\nPress [ENTER] to continue",
 				c_CentreOffset + sf::Vector2f(-90, -30),
 				16,
 				m_Assets->m_LightFontColour
