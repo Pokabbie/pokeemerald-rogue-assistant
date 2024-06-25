@@ -35,6 +35,7 @@ struct AssetCollection
 	sf::Color m_ClearColour;
 	sf::Color m_DarkFontColour;
 	sf::Color m_LightFontColour;
+	sf::Color m_ErrorFontColour;
 	sf::Font m_Font;
 	sf::Texture m_PoketchOverlay;
 
@@ -43,6 +44,7 @@ struct AssetCollection
 		m_ClearColour = sf::Color(112, 176, 112);
 		m_DarkFontColour = sf::Color(16, 40, 24);
 		m_LightFontColour = sf::Color(56, 80, 48);
+		m_ErrorFontColour = sf::Color(196, 24, 24);
 
 		LoadBin2CppAsset(m_Font, bin2cpp::getPokemonemeraldproTtfFile());
 		m_Font.setSmooth(false);
@@ -160,13 +162,28 @@ void PrimaryUI::Render(Window& window)
 
 
 	// Draw title
-	m_Assets->DrawCenteredText(
-		gfx, 
-		"Rogue Assistant",
-		c_CentreOffset + sf::Vector2f(0, -86),
-		32, 
-		m_Assets->m_DarkFontColour
-	);
+	std::string errorStr = GameConnectionManager::Instance().GetRecentError();
+
+	if (errorStr.empty())
+	{
+		m_Assets->DrawCenteredText(
+			gfx,
+			"Rogue Assistant",
+			c_CentreOffset + sf::Vector2f(0, -86),
+			32,
+			m_Assets->m_DarkFontColour
+		);
+	}
+	else
+	{
+		m_Assets->DrawCenteredText(
+			gfx,
+			errorStr,
+			c_CentreOffset + sf::Vector2f(0, -86),
+			16,
+			m_Assets->m_ErrorFontColour
+		);
+	}
 
 	// Print awaiting connection screen
 	if (!GameConnectionManager::Instance().AnyConnectionsActive())

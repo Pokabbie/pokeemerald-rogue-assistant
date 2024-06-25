@@ -2,8 +2,13 @@
 #include "Behaviours/HomeBoxBehaviour.h"
 #include "Behaviours/MultiplayerBehaviour.h"
 #include "GameConnection.h"
+#include "GameConnectionManager.h"
 #include "GameData.h"
 #include "Log.h"
+
+// Make sure to change the same value in the Game if this ever changes
+// (These numbers must match in order to connect)
+#define ROGUE_ASSISTANT_COMPAT_VERSION 1
 
 void CommonBehaviour::OnAttach(GameConnection & game)
 {
@@ -21,6 +26,13 @@ void CommonBehaviour::OnUpdate(GameConnection& game)
 		return;
 
 	GameStructures::RogueAssistantHeader const& rogueHeader = game.GetObservedGameMemory().GetRogueHeader();
+
+	if (rogueHeader.rogueAssistantCompatVersion != ROGUE_ASSISTANT_COMPAT_VERSION)
+	{
+		GameConnectionManager::Instance().PushError("Cannot connect to Game. Do you need\nto update RogueAssistant?");
+		game.Disconnect();
+		return;
+	}
 
 
 	// Notify game that connected, by constantly spamming 0 into the confirm address

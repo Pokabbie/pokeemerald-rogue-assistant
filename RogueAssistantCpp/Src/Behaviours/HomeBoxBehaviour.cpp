@@ -86,7 +86,7 @@ void HomeBoxBehaviour::OnUpdate(GameConnection& game)
 			if (m_ActiveBoxData.size() != rogueHeader.homeLocalBoxCount)
 			{
 				// Need to keep requesting boxes
-				if (game.GetObservedGameMemory().RequestPokemonStorageData(m_ActiveBoxData.size()))
+				if (game.GetObservedGameMemory().RequestPokemonStorageData((u32)m_ActiveBoxData.size()))
 				{
 					m_ActiveBoxData.emplace_back();
 					m_State = HomeBoxBehaviour::State::WaitingForBoxData;
@@ -109,7 +109,6 @@ void HomeBoxBehaviour::OnUpdate(GameConnection& game)
 
 				m_State = HomeBoxBehaviour::State::SendGameDataInit;
 			}
-
 		}
 		break;
 
@@ -118,7 +117,7 @@ void HomeBoxBehaviour::OnUpdate(GameConnection& game)
 			if (game.GetObservedGameMemory().IsPokemonStorageBlobReady())
 			{
 				// Initialise and then loop
-				InitaliseLocalBoxData(game, m_ActiveBoxData.size() - 1);
+				InitaliseLocalBoxData(game, (u32)m_ActiveBoxData.size() - 1);
 				m_State = HomeBoxBehaviour::State::InitialiseBoxData;
 			}
 		}

@@ -44,6 +44,7 @@ void GameConnectionManager::UpdateConnections()
 	if (m_Listener->accept(m_AcceptingConnection->m_Socket) == sf::Socket::Done)
 	{
 		LOG_INFO("Game: Incoming connection...");
+		ClearRecentError();
 
 		GameConnectionRef gameConn = m_AcceptingConnection;
 		m_AcceptingConnection = nullptr;

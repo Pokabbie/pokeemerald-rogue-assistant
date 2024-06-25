@@ -150,6 +150,7 @@
     <ClInclude Include="Inc\DataStream.h">
       <Filter>Inc</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="External">
@@ -176,5 +177,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\RogueAssistant_mGBA.lua" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="RogueAssistantCpp.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Assets\WobbuffetIcon.ico" />
   </ItemGroup>
 </Project>
