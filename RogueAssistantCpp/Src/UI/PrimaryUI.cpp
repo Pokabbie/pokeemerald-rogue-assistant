@@ -1,11 +1,12 @@
 #include "UI/PrimaryUI.h"
 #include "UI/Window.h"
 #include "Assets.h"
+#include "Behaviours/MultiplayerBehaviour.h"
+#include "Behaviours/HomeBoxBehaviour.h"
 #include "Defines.h"
 #include "GameConnection.h"
 #include "GameConnectionManager.h"
-#include "Behaviours/MultiplayerBehaviour.h"
-#include "Behaviours/HomeBoxBehaviour.h"
+#include "UserData.h"
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
@@ -340,11 +341,11 @@ void PrimaryUI::RenderMultiplayerPage(Window& window, MultiplayerBehaviour* mult
 	{
 		if (multiplayer->IsRequestingHostConnection())
 		{
-			window.SetInputText(std::to_string(MultiplayerBehaviour::c_DefaultPort));
+			window.SetInputText(UserData::GetSavedString("Multiplayer.HostPort", std::to_string(MultiplayerBehaviour::c_DefaultPort)));
 		}
 		else
 		{
-
+			window.SetInputText(UserData::GetSavedString("Multiplayer.JoinIP"));
 		}
 	}
 
@@ -375,7 +376,14 @@ void PrimaryUI::RenderMultiplayerPage(Window& window, MultiplayerBehaviour* mult
 
 		if (window.ButtonJustReleased(sf::Keyboard::Return))
 		{
-			multiplayer->ProvideConnectionAddress(window.GetInputText());
+			std::string input = window.GetInputText();
+			multiplayer->ProvideConnectionAddress(input);
+
+			if (multiplayer->IsRequestingHostConnection())
+				UserData::SetSavedString("Multiplayer.HostPort", input);
+			else
+				UserData::SetSavedString("Multiplayer.JoinIP", input);
+
 			window.ClearInputText();
 		}
 	}

@@ -3,6 +3,7 @@
 #include "Assets.h"
 #include "GameConnectionManager.h"
 #include "Log.h"
+#include "UserData.h"
 
 #include <fstream>
 #include <stdlib.h>
@@ -68,6 +69,7 @@ static void DumpScriptsNextToExe()
 int RogueAssistant_Main(std::vector<std::string> const& args)
 {
     DumpScriptsNextToExe();
+    UserData::Init();
 
     WindowConfig config;
     config.title = "Rogue Assistant";
@@ -94,6 +96,7 @@ int RogueAssistant_Main(std::vector<std::string> const& args)
 bool RogueAssistant_MainLoop(Window* window, void* userData)
 {
     PrimaryUI* ui = (PrimaryUI*)userData;
+    UserData::Update();
     GameConnectionManager::Instance().UpdateConnections();
     ui->Render(*window);
     return true;

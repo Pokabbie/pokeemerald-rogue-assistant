@@ -10,6 +10,9 @@
 
 namespace fs = std::filesystem;
 
+std::map<std::string, std::string> UserData::s_SavedValues;
+bool UserData::s_PendingSavedValueChange = false;
+
 static std::wstring GetEnvVar(std::wstring const& var, std::wstring const& defaultVal)
 {
 	wchar_t* buf = nullptr;
@@ -118,6 +121,82 @@ bool UserData::TryOpenAppendFile(std::wstring const& inPath, std::fstream& outSt
 	}
 
 	return false;
+}
+
+void UserData::Init()
+{
+	std::ifstream stream("settings.ini");
+
+	if (stream.is_open())
+	{
+		std::string line;
+		while (std::getline(stream, line))
+		{
+			std::vector<std::string> parts = strutil::split(line, '=');
+			if (parts.size() == 2)
+			{
+				SetSavedString(parts[0], parts[1]);
+			}
+		}
+		stream.close();
+	}
+}
+
+void UserData::Update()
+{
+	if (s_PendingSavedValueChange)
+	{
+		s_PendingSavedValueChange = false;
+		std::ofstream stream("settings.ini");
+
+		if (stream.is_open())
+		{
+			for (auto it : s_SavedValues)
+			{
+				stream << it.first << "=" << it.second << "\n";
+			}
+
+			stream.close();
+		}
+	}
+}
+
+std::string UserData::GetSavedString(std::string const& key, std::string const& defaultValue)
+{
+	auto it = s_SavedValues.find(key);
+	if (it == s_SavedValues.end())
+	{
+		SetSavedString(key, defaultValue);
+		return defaultValue;
+	}
+
+	return it->second;
+}
+
+void UserData::SetSavedString(std::string const& key, std::string const& value)
+{
+	s_SavedValues[key] = value;
+	s_PendingSavedValueChange = true;
+}
+
+int UserData::GetSavedInt(std::string const& key, int defaultValue)
+{
+	std::string strValue = GetSavedString(key, std::to_string(defaultValue));
+
+	try 
+	{
+		return std::stoi(strValue);
+	}
+	catch (std::exception) //& e)
+	{
+		SetSavedInt(key, defaultValue);
+		return defaultValue;
+	}
+}
+
+void UserData::SetSavedInt(std::string const& key, int value)
+{
+	SetSavedString(key, std::to_string(value));
 }
 
 #pragma warning( pop )
