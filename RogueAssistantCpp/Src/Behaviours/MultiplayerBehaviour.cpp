@@ -278,7 +278,7 @@ void MultiplayerBehaviour::OpenClientConnection(GameConnection& game)
 	if (std::to_string(desiredPort) == rawPort)
 	{
 		// Has succeeded so remove the port
-		m_ConnectionAddressRaw = m_ConnectionAddressRaw.substr(0, m_ConnectionAddressRaw.size() + rawPort.size() + 1);
+		m_ConnectionAddressRaw = m_ConnectionAddressRaw.substr(0, m_ConnectionAddressRaw.size() - rawPort.size() - 1);
 		m_Port = desiredPort;
 	}
 	else
